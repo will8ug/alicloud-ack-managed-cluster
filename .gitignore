@@ -40,4 +40,4 @@ terraform.rc
 .DS_Store
 
 # just local test files
-/aks_cfg
+/kube_cfg
