@@ -1,12 +1,3 @@
-provider "alicloud" {
-  region = "cn-shenzhen"
-  #请与variable.tf 配置文件中得地域保持一致
-}
-variable "k8s_name_prefix" {
-  description = "The name prefix used to create managed kubernetes cluster."
-  default     = "tf-ack-shenzhen"
-}
-
 resource "random_uuid" "this" {}
 
 locals {
@@ -54,16 +45,16 @@ resource "alicloud_vswitch" "terway_vswitches" {
 }
 
 resource "alicloud_cs_managed_kubernetes" "default" {
-  name = local.k8s_name_terway
-  cluster_spec = "ack.pro.small"
-  version      = "1.28.9-aliyun.1"
+  name               = local.k8s_name_terway
+  cluster_spec       = "ack.pro.small"
+  version            = "1.28.9-aliyun.1"
   worker_vswitch_ids = split(",", join(",", alicloud_vswitch.vswitches.*.id))
 
   pod_vswitch_ids = split(",", join(",", alicloud_vswitch.terway_vswitches.*.id))
 
-  new_nat_gateway = true
-  # pod_cidr                  = "10.10.0.0/16"
-  service_cidr = "10.11.0.0/16"
+  new_nat_gateway      = true
+  pod_cidr             = "10.10.0.0/16"
+  service_cidr         = "10.11.0.0/16"
   slb_internet_enabled = true
 
   enable_rrsa = true
@@ -80,27 +71,23 @@ resource "alicloud_cs_managed_kubernetes" "default" {
 }
 
 resource "alicloud_cs_kubernetes_node_pool" "default" {
-  cluster_id = alicloud_cs_managed_kubernetes.default.id
+  cluster_id     = alicloud_cs_managed_kubernetes.default.id
   node_pool_name = local.nodepool_name
-  vswitch_ids = split(",", join(",", alicloud_vswitch.vswitches.*.id))
+  vswitch_ids    = split(",", join(",", alicloud_vswitch.vswitches.*.id))
 
-  # Worker ECS Type and ChargeType
   instance_types       = var.worker_instance_types
   instance_charge_type = "PostPaid"
 
-  # customize worker instance name
-  # node_name_mode      = "customized,ack-terway-shenzhen,ip,default"
-
   desired_size = 2
-  password = var.password
+  password     = var.password
 
   install_cloud_monitor = true
 
   system_disk_category = "cloud_efficiency"
-  system_disk_size     = 40
+  system_disk_size     = 60
 
   data_disks {
     category = "cloud_ssd"
-    size = 100
+    size     = 100
   }
 }

@@ -1,10 +1,11 @@
 # This file is maintained automatically by "terraform init".
 # Manual edits may be lost in future updates.
 
-provider "registry.terraform.io/hashicorp/alicloud" {
-  version = "1.227.1"
+provider "registry.terraform.io/aliyun/alicloud" {
+  version     = "1.228.0"
+  constraints = "~> 1.227"
   hashes = [
-    "h1:p3w6JDiqsRpdeLjjM23QZAj/ZN2pj2VtrA/GncITC7I=",
+    "h1:yVw/d8DteoXXRE4tcKmFdc8J8+uKQg+OdjRGOdY5fbs=",
   ]
 }
 
